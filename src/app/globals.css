@@ -1,26 +1,252 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+	--paper: #f4f4f0;
+	--ink: #1a1a1a;
+	--accent: #b33939;
+	--chart-bg: #e6e6e2;
+	--font-mono: var(--font-courier), monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+	font-family: var(--font-lora), serif;
+	line-height: 1.8;
+	font-size: 19px;
+	text-rendering: optimizeLegibility;
+	background: var(--paper);
+	color: var(--ink);
+}
+
+.double-border {
+	border-bottom: 5px double var(--ink);
+}
+
+.drop-cap::first-letter {
+	float: left;
+	font-family: var(--font-playfair), sans-serif;
+	font-size: 6rem;
+	line-height: 0.8;
+	padding-right: 15px;
+	font-weight: 700;
+	color: var(--accent);
+}
+
+.sticky-viz {
+	position: sticky;
+	background: #fff;
+	border: 3px solid var(--ink);
+	box-shadow: 12px 12px 0 var(--ink);
+	padding: 25px;
+	height: auto;
+	min-height: 400px;
+	transition: all 0.3s;
+}
+
+.viz-header {
+	font-family: var(--font-courier), monospace;
+	font-size: 0.8rem;
+}
+
+/* Vertical Bars */
+.viz-vertical {
+	display: none;
+	height: 300px;
+	align-items: flex-end;
+	justify-content: space-around;
+	gap: 15px;
+}
+
+.viz-vertical.active-viz {
+	display: flex;
+}
+
+.viz-vertical .v-bar {
+	transform: scaleY(var(--target-scale, 0));
+}
+
+.v-col {
+	width: 30%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.v-bar {
+	width: 100%;
+	background: var(--ink);
+	transform-origin: bottom;
+	transition: transform 0.6s ease;
+	position: relative;
+}
+
+.v-val {
+	font-family: var(--font-courier), monospace;
+	font-weight: 800;
+	font-size: 1.2rem;
+	margin-bottom: 5px;
+}
+
+.v-label {
+	font-family: var(--font-playfair), sans-serif;
+	font-size: 0.8rem;
+	text-align: center;
+	margin-top: 10px;
+	text-transform: uppercase;
+}
+
+/* Horizontal Bars */
+.viz-horizontal {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	height: 300px;
+	gap: 30px;
+}
+
+.viz-horizontal.active-viz {
+	display: flex;
+}
+
+.viz-horizontal.active-viz .h-fill {
+	animation: growBarH 1s ease forwards;
+}
+
+@keyframes growBarH {
+	from {
+		width: 0%;
+	}
+	to {
+		width: var(--target-width);
+	}
+}
+
+.h-group {
+	width: 100%;
+}
+
+.h-meta {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 5px;
+	font-family: var(--font-playfair), sans-serif;
+	font-size: 0.9rem;
+}
+
+.h-track {
+	width: 100%;
+	height: 25px;
+	background: var(--chart-bg);
+	border: 1px solid var(--ink);
+}
+
+.h-fill {
+	height: 100%;
+	background: var(--accent);
+	width: var(--target-width, 0%);
+	transition: width 0.6s ease;
+}
+
+.h-val {
+	font-family: var(--font-courier), monospace;
+	font-weight: bold;
+}
+
+/* Ring Charts */
+.viz-rings {
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 300px;
+	gap: 20px;
+}
+
+.viz-rings.active-viz {
+	display: flex;
+}
+
+.ring-container {
+	width: 140px;
+	height: 140px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.ring-wrapper {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	position: absolute;
+	--fill-percent: 0%;
+	background: conic-gradient(
+		var(--ring-color) calc(var(--fill-percent)) var(--fill-percent),
+		var(--chart-bg) calc(var(--fill-percent)) 100%
+	);
+	transition: --fill-percent 0.8s ease;
+}
+
+.ring-inner {
+	width: 100px;
+	height: 100px;
+	background: #fff;
+	border-radius: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #ccc;
+}
+
+.ring-val {
+	font-family: var(--font-courier), monospace;
+	font-size: 1.8rem;
+	font-weight: 800;
+	color: var(--accent);
+}
+
+.ring-label {
+	font-family: var(--font-playfair), sans-serif;
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	margin-top: 10px;
+}
+
+.viz-caption {
+	font-size: 0.85rem;
+	font-style: italic;
+}
+
+@media (max-width: 900px) {
+	.article {
+		padding-bottom: 280px;
+	}
+
+	h1 {
+		font-size: 2.5rem;
+	}
+
+	.ring-container {
+		width: 100px;
+		height: 100px;
+	}
+
+	.ring-inner {
+		width: 70px;
+		height: 70px;
+	}
+
+	.ring-val {
+		font-size: 1.2rem;
+	}
+
+	.viz-vertical,
+	.viz-horizontal,
+	.viz-rings {
+		height: 160px;
+	}
 }
